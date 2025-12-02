@@ -5,7 +5,7 @@ CREATE TABLE users (
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     grade INT NOT NULL,
-    class_letter VARCHAR(255) NOT NULL,
+    class_letter VARCHAR(5) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     referral VARCHAR(255) NOT NULL,
     by_referral VARCHAR(255) DEFAULT 'none'

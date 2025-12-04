@@ -11,6 +11,10 @@ type UsersPostgres struct {
 	db *sqlx.DB
 }
 
+const (
+	adminUsername = "sgorsan"
+)
+
 func NewUsersPostgres(db *sqlx.DB) *UsersPostgres {
 	return &UsersPostgres{
 		db: db,
@@ -43,6 +47,17 @@ func (r *UsersPostgres) GetOneUser(userId int) (model.User, error) {
 		return model.User{}, err
 	}
 	return user, nil
+}
+
+func (r *UsersPostgres) CheckIsAdmin(userId int) bool {
+	user, err := r.GetOneUser(userId)
+	if err != nil {
+		return false
+	}
+	if user.TelegramUsername == adminUsername {
+		return true
+	}
+	return false
 }
 
 func (r *UsersPostgres) GetUserReferrals(userId int) ([]model.User, error) {

@@ -6,3 +6,6 @@ db:
   password: "genatasks777"
   dbname: "postgres"
   sslmode: "disable"
+neo4j:
+  user: "neo4j"
+  password: "password"

@@ -63,14 +63,14 @@ func main() {
 	if err = migrations.Up(); err != nil && err != migrate.ErrNoChange {
 		logrus.Fatalf("Migrations error: %s", err.Error())
 	}
-	neoDb, err := repository.ConnectNeoDB()
+	neoDb, err := repository.ConnectNeoDB(viper.GetString("neo4j.user"), viper.GetString("neo4j.password"))
 	if err != nil {
 		logrus.Fatalf("neo connect error: %s", err.Error())
 	}
 	if err := RunNeoMigrations(context.Background(), neoDb, "file://node_schema"); err != nil {
 		logrus.Fatalf("neo migration error: %s", err.Error())
 	}
-	repo := repository.NewRepository(db)
+	repo := repository.NewRepository(db, neoDb)
 	services := service.NewService(repo)
 	endp := endpoint.NewEndpoint(services)
 	server := &trackerbackend.Server{}

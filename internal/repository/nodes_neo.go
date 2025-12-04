@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/lavatee/tracker_backend/internal/model"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
@@ -11,8 +12,14 @@ type NodesNeo struct {
 	driver neo4j.DriverWithContext
 }
 
-func (r *NodesNeo) GetNextNodes(ctx context.Context, driver neo4j.DriverWithContext, id int64) ([]Node, error) {
-	session := driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
+func NewNodesNeo(neoDriver neo4j.DriverWithContext) *NodesNeo {
+	return &NodesNeo{
+		driver: neoDriver,
+	}
+}
+
+func (r *NodesNeo) GetNextNodes(ctx context.Context, id int64) ([]model.Node, error) {
+	session := r.driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
 	defer session.Close(ctx)
 
 	if id == 0 {
@@ -26,11 +33,11 @@ func (r *NodesNeo) GetNextNodes(ctx context.Context, driver neo4j.DriverWithCont
 			return nil, err
 		}
 
-		var nodes []Node
+		var nodes []model.Node
 
 		for result.Next(ctx) {
 			rec := result.Record()
-			nodes = append(nodes, Node{
+			nodes = append(nodes, model.Node{
 				ID:     rec.Values[0].(int64),
 				Name:   rec.Values[1].(string),
 				Points: int(rec.Values[2].(int64)),
@@ -51,11 +58,11 @@ func (r *NodesNeo) GetNextNodes(ctx context.Context, driver neo4j.DriverWithCont
 		return nil, err
 	}
 
-	var nodes []Node
+	var nodes []model.Node
 
 	for result.Next(ctx) {
 		rec := result.Record()
-		nodes = append(nodes, Node{
+		nodes = append(nodes, model.Node{
 			ID:     rec.Values[0].(int64),
 			Name:   rec.Values[1].(string),
 			Points: int(rec.Values[2].(int64)),
@@ -65,8 +72,8 @@ func (r *NodesNeo) GetNextNodes(ctx context.Context, driver neo4j.DriverWithCont
 	return nodes, result.Err()
 }
 
-func (r *NodesNeo) GetPreviousNodes(ctx context.Context, driver neo4j.DriverWithContext, id int64) ([]Node, error) {
-	session := driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
+func (r *NodesNeo) GetPreviousNodes(ctx context.Context, id int64) ([]model.Node, error) {
+	session := r.driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
 	defer session.Close(ctx)
 
 	query := `
@@ -80,11 +87,11 @@ func (r *NodesNeo) GetPreviousNodes(ctx context.Context, driver neo4j.DriverWith
 		return nil, err
 	}
 
-	var parents []Node
+	var parents []model.Node
 
 	for result.Next(ctx) {
 		rec := result.Record()
-		parents = append(parents, Node{
+		parents = append(parents, model.Node{
 			ID:     rec.Values[0].(int64),
 			Name:   rec.Values[1].(string),
 			Points: int(rec.Values[2].(int64)),
@@ -94,8 +101,8 @@ func (r *NodesNeo) GetPreviousNodes(ctx context.Context, driver neo4j.DriverWith
 	return parents, result.Err()
 }
 
-func (r *NodesNeo) UpdateNode(ctx context.Context, driver neo4j.DriverWithContext, id int64, name string, points int) error {
-	session := driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+func (r *NodesNeo) UpdateNode(ctx context.Context, id int64, name string, points int) error {
+	session := r.driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close(ctx)
 
 	query := `
@@ -114,8 +121,8 @@ func (r *NodesNeo) UpdateNode(ctx context.Context, driver neo4j.DriverWithContex
 	return err
 }
 
-func (r *NodesNeo) AddNode(ctx context.Context, driver neo4j.DriverWithContext, parentID int64, name string, points int) (int64, error) {
-	session := driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+func (r *NodesNeo) AddNode(ctx context.Context, parentID int64, name string, points int) (int64, error) {
+	session := r.driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close(ctx)
 
 	query := `
@@ -143,8 +150,8 @@ func (r *NodesNeo) AddNode(ctx context.Context, driver neo4j.DriverWithContext, 
 	return 0, fmt.Errorf("no result returned")
 }
 
-func (r *NodesNeo) GetNodeByID(ctx context.Context, driver neo4j.DriverWithContext, id int64) (*Node, error) {
-	session := driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
+func (r *NodesNeo) GetNodeByID(ctx context.Context, id int64) (model.Node, error) {
+	session := r.driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
 	defer session.Close(ctx)
 
 	query := `
@@ -159,16 +166,16 @@ func (r *NodesNeo) GetNodeByID(ctx context.Context, driver neo4j.DriverWithConte
 	})
 
 	if err != nil {
-		return nil, err
+		return model.Node{}, err
 	}
 
 	if !result.Next(ctx) {
-		return nil, fmt.Errorf("node not found")
+		return model.Node{}, fmt.Errorf("node not found")
 	}
 
 	rec := result.Record()
 
-	node := Node{
+	node := model.Node{
 		ID:     rec.Values[0].(int64),
 		Name:   rec.Values[1].(string),
 		Points: int(rec.Values[2].(int64)),
@@ -178,5 +185,5 @@ func (r *NodesNeo) GetNodeByID(ctx context.Context, driver neo4j.DriverWithConte
 		node.ParentID = rec.Values[3].(int64)
 	}
 
-	return &node, nil
+	return node, nil
 }

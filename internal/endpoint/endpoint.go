@@ -38,6 +38,11 @@ func (e *Endpoint) InitRoutes() *gin.Engine {
 	{
 		api.GET("/users/:id", e.GetOneUser)
 		api.GET("/referral-users", e.GetUserReferrals)
+		api.GET("/next-nodes/:id", e.GetNextNodes)
+		api.GET("/previous-nodes/:id", e.GetPreviousNodes)
+		api.PUT("/nodes/:id", e.PutNode)
+		api.POST("/nodes", e.PostNode)
+		api.GET("/nodes/:id", e.GetOneNode)
 	}
 	return router
 }

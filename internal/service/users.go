@@ -1,5 +1,23 @@
 package service
 
+import (
+	"crypto/sha1"
+	"fmt"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/hashicorp/go-uuid"
+	"github.com/lavatee/tracker_backend/internal/model"
+	"github.com/lavatee/tracker_backend/internal/repository"
+)
+
+const (
+	salt       = "c5v6hnuj6kh"
+	accessTTL  = 15 * time.Minute
+	refreshTTL = 20 * 24 * time.Hour
+	tokenKey   = "yaperdanul"
+)
+
 type UsersService struct {
 	repo *repository.Repository
 }
@@ -112,3 +130,6 @@ func (s *UsersService) GetOneUser(userId int) (model.User, error) {
 	return s.repo.Users.GetOneUser(userId)
 }
 
+func (s *UsersService) GetUserReferrals(userId int) ([]model.User, error) {
+	return s.repo.Users.GetUserReferrals(userId)
+}

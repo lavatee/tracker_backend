@@ -9,5 +9,5 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     referral VARCHAR(255) NOT NULL,
     by_referral VARCHAR(255) DEFAULT 'none'
-);
+)
 

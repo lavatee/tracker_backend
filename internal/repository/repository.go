@@ -14,6 +14,7 @@ type Users interface {
 	GetOneUser(userId int) (model.User, error)
 	GetUserReferrals(userId int) ([]model.User, error)
 	CheckIsAdmin(userId int) bool
+	UpdateUserBalance(userId int, coins int, action string) error //action типо "+" либо "-"
 }
 
 type Nodes interface {
@@ -22,6 +23,38 @@ type Nodes interface {
 	UpdateNode(ctx context.Context, id int64, name string, points int) error
 	AddNode(ctx context.Context, parentID int64, name string, points int) (int64, error)
 	GetNodeByID(ctx context.Context, id int64) (model.Node, error)
+}
+
+type Achievements interface {
+	CreateAchievement(ach model.Achievement) (int, error)
+	DeleteAchievement(achId int, userId int) error
+	GetUserAchievements(userId int) ([]model.Achievement, error)
+	GetPendingAchievements() ([]model.Achievement, error)
+	SetAchievementStatus(achId int, status string) error
+	GetOneAchievement(achId int) (model.Achievement, error)
+}
+
+type Products interface {
+	CreateProduct(product model.Product) (int, error)
+	GetProducts() ([]model.Product, error)
+	GetOneProduct(productId int) (model.Product, error)
+	DeleteProduct(productId int) error
+	UpdateProduct(product model.Product) error
+}
+
+type Cart interface {
+	AddProductToCart(productInCart model.ProductInCart) (int, error)
+	DeleteProductFromCart(productId int, userId int) error
+	CleanUserCart(userId int) error
+}
+
+type Orders interface {
+	CreateOrder(userId int) (int, error)
+	GetOneOrder(orderId int) (model.Order, error)
+	GetOrdersByStatus(status string) (model.Order, error)
+	GetOrderProducts(orderId int) ([]model.OrderedProduct, error)
+	SetOrderStatus(status string) error
+	GetUserOrders(userId int) ([]model.Order, error)
 }
 
 type Repository struct {

@@ -19,14 +19,15 @@ CREATE TABLE achievements (
     coins INT NOT NULL,
     text VARCHAR(255) NOT NULL,
     document_url VARCHAR(255) NOT NULL,
-    status VARCHAR(20) CHECK (status IN ('pending', 'approved', 'rejected'))
+    status VARCHAR(20) CHECK (status IN ('pending', 'approved', 'rejected')) DEFAULT 'pending',
+    reject_comment VARCHAR(255) NOT NULL DEFAULT 'none'
 );
 
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price INT NOT NULL,
-    photo_url VARCHAR(255),
+    photo_url VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL
 );
 
@@ -40,7 +41,7 @@ CREATE TABLE products_in_cart (
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    status VARCHAR(20) CHECK (status IN ('pending', 'ready', 'issued'))
+    status VARCHAR(20) CHECK (status IN ('pending', 'rejected', 'ready', 'issued')) DEFAULT 'pending'
 );
 
 CREATE TABLE ordered_products (

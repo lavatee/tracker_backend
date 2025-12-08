@@ -25,6 +25,40 @@ type Nodes interface {
 	GetNodeByID(ctx context.Context, id int64) (model.Node, error)
 }
 
+type Achievements interface {
+	CreateAchievement(ach model.Achievement) (int, error)
+	DeleteAchievement(achId int, userId int) error
+	GetUserAchievements(userId int) ([]model.Achievement, error)
+	GetAchievementsByStatus(status string, userId int) ([]model.Achievement, error)
+	ApproveAchievement(achId int, userId int) error
+	RejectAchievement(achId int, userId int) error
+	GetAchievementById(achId int) (model.Achievement, error)
+}
+
+type Products interface {
+	CreateProduct(product model.Product, userId int) (int, error)
+	GetProducts() ([]model.Product, error)
+	GetProductById(productId int) (model.Product, error)
+	DeleteProduct(productId int, userId int) error
+	UpdateProduct(product model.Product, userId int) error
+}
+
+type Cart interface {
+	AddProductToCart(productInCart model.ProductInCart) (int, error)
+	UpdateProductInCartAmount(productId int, userId int, amount int) error
+	GetUserCart(userId int) ([]model.ProductInCart, error)
+	DeleteProductFromCart(productId int, userId int) error
+	CleanUserCart(userId int) error
+}
+
+type Orders interface {
+	CreateOrder(userId int) (int, error)
+	GetOrderById(orderId int) (model.Order, error)
+	GetOrdersByStatus(status string) ([]model.Order, error)
+	SetOrderStatus(orderId int, status string) error
+	GetUserOrders(userId int) ([]model.Order, error)
+}
+
 type Service struct {
 	Users
 	Nodes

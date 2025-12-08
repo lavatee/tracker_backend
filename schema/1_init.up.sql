@@ -35,7 +35,8 @@ CREATE TABLE products_in_cart (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     product_id INT NOT NULL,
-    product_amount INT NOT NULL
+    product_amount INT NOT NULL,
+    UNIQUE(user_id, product_id)
 );
 
 CREATE TABLE orders (
@@ -49,7 +50,8 @@ CREATE TABLE ordered_products (
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     product_amount INT NOT NULL,
-    price INT NOT NULL
+    price INT NOT NULL,
+    UNIQUE(order_id, product_id)
 );
 
 ALTER TABLE achievements ADD FOREIGN KEY (user_id) REFERENCES users(id);

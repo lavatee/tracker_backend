@@ -1,9 +1,11 @@
 package model
 
 type Order struct {
-	Id     int    `json:"id" db:"id"`
-	UserId int    `json:"user_id" db:"user_id"`
-	Status string `json:"status" db:"status"`
+	Id              int              `json:"id" db:"id"`
+	UserId          int              `json:"user_id" db:"user_id"`
+	Status          string           `json:"status" db:"status"`
+	OrderPrice      int              `json:"order_price" db:"order_price"`
+	OrderedProducts []OrderedProduct `json:"ordered_products" db:"ordered_products"`
 }
 
 type OrderedProduct struct {

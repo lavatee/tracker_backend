@@ -7,7 +7,12 @@ import (
 )
 
 const (
-	usersTable = "users"
+	usersTable           = "users"
+	achievementsTable    = "achievements"
+	productsTable        = "products"
+	productsInCartTable  = "products_in_cart"
+	ordersTable          = "orders"
+	orderedProductsTable = "ordered_products"
 )
 
 type PostgresConfig struct {

@@ -32,6 +32,7 @@ type Achievements interface {
 	GetAchievementsByStatus(status string) ([]model.Achievement, error)
 	SetAchievementStatus(achId int, status string) error
 	GetAchievementById(achId int) (model.Achievement, error)
+	SetRejectComment(achId int, comment string) error
 }
 
 type Products interface {

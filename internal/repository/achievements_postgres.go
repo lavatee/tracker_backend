@@ -65,3 +65,9 @@ func (r *AchievementsPostgres) GetAchievementById(achId int) (model.Achievement,
 	}
 	return ach, nil
 }
+
+func (r *AchievementsPostgres) SetRejectComment(achId int, comment string) error {
+	query := fmt.Sprintf("UPDATE %s SET reject_comment = $1 WHERE id = $2", achievementsTable)
+	_, err := r.db.Exec(query, comment, achId)
+	return err
+}

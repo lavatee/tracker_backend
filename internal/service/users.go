@@ -133,3 +133,16 @@ func (s *UsersService) GetOneUser(userId int) (model.User, error) {
 func (s *UsersService) GetUserReferrals(userId int) ([]model.User, error) {
 	return s.repo.Users.GetUserReferrals(userId)
 }
+
+func (s *UsersService) UpdateUserBalance(adminId int, userId int, coins int, action string) error {
+	if isAdmin := s.repo.Users.CheckIsAdmin(adminId); !isAdmin {
+		return fmt.Errorf("user is not an admin")
+	}
+	if action != "+" && action != "-" {
+		return fmt.Errorf("invalid action")
+	}
+	if coins <= 0 {
+		return fmt.Errorf("coins must be greater than 0")
+	}
+	return s.repo.Users.UpdateUserBalance(userId, coins, action)
+}

@@ -117,3 +117,29 @@ func (e *Endpoint) GetUserReferrals(c *gin.Context) {
 		"users": referralUsers,
 	})
 }
+
+type UpdateUserBalanceInput struct {
+	UserId int    `json:"user_id"`
+	Coins  int    `json:"coins"`
+	Action string `json:"action"`
+}
+
+func (e *Endpoint) UpdateUserBalance(c *gin.Context) {
+	var input UpdateUserBalanceInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	adminId, err := e.GetUserId(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	if err := e.services.Users.UpdateUserBalance(adminId, input.UserId, input.Coins, input.Action); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": "ok",
+	})
+}

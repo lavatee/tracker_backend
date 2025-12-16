@@ -1,6 +1,6 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    telegram_username VARCHAR(255) NOT NULL,
+    telegram_username VARCHAR(255) NOT NULL UNIQUE,
     telegram_chat_id INT,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,

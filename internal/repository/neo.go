@@ -7,7 +7,7 @@ import (
 )
 
 func ConnectNeoDB(username string, password string) (neo4j.DriverWithContext, error) {
-	uri := "neo4j://localhost:7687"
+	uri := "neo4j://neo4j:7687"
 
 	driver, err := neo4j.NewDriverWithContext(uri, neo4j.BasicAuth(username, password, ""))
 	if err != nil {

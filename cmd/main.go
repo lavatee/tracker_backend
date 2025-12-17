@@ -71,7 +71,11 @@ func main() {
 		logrus.Fatalf("neo migration error: %s", err.Error())
 	}
 	repo := repository.NewRepository(db, neoDb)
-	services := service.NewService(repo)
+	s3, err := service.ConnectS3(viper.GetString("s3.url"), viper.GetString("s3.accessKey"), viper.GetString("s3.secretKey"), viper.GetString("s3.region"))
+	if err != nil {
+		logrus.Fatalf("error connecting to s3: %s", err.Error())
+	}
+	services := service.NewService(repo, s3, viper.GetString("s3.bucket"))
 	endp := endpoint.NewEndpoint(services)
 	server := &trackerbackend.Server{}
 	go func() {

@@ -38,6 +38,8 @@ services:
         condition: service_healthy
     networks:
       - app
+    ports:
+      - 8001:8001
 
   neo4j:
     image: neo4j:5
@@ -54,3 +56,5 @@ services:
     volumes:
       - neo4j_data:/data
       - neo4j_logs:/logs
+    networks:
+      - app

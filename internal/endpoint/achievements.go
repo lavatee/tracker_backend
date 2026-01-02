@@ -10,7 +10,6 @@ import (
 
 type CreateAchievementInput struct {
 	NodeId int    `form:"node_id"`
-	Coins  int    `form:"coins"`
 	Text   string `form:"text"`
 }
 
@@ -36,11 +35,11 @@ func (e *Endpoint) CreateAchievement(c *gin.Context) {
 		return
 	}
 	defer file.Close()
-
+	node, err := e.services.Nodes.GetNodeByID(c, int64(input.NodeId))
 	ach := model.Achievement{
 		UserId: userId,
 		NodeId: input.NodeId,
-		Coins:  input.Coins,
+		Coins:  node.Points,
 		Text:   input.Text,
 	}
 

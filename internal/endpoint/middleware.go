@@ -12,7 +12,7 @@ func (e *Endpoint) Middleware(c *gin.Context) {
 	header := c.GetHeader("Authorization")
 	sliceOfHeaders := strings.Split(header, " ")
 	if len(sliceOfHeaders) != 2 || sliceOfHeaders[0] != "Bearer" {
-		c.Set("user_id", float64(0))
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": fmt.Errorf("invalid token")})
 		return
 	}
 	claims, err := e.services.Users.ParseToken(sliceOfHeaders[1])

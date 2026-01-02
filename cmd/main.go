@@ -67,7 +67,7 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("neo connect error: %s", err.Error())
 	}
-	if err := RunNeoMigrations(context.Background(), neoDb, "file://node_schema"); err != nil {
+	if err := RunNeoMigrations(context.Background(), neoDb, "node_schema"); err != nil {
 		logrus.Fatalf("neo migration error: %s", err.Error())
 	}
 	repo := repository.NewRepository(db, neoDb)
@@ -100,9 +100,13 @@ func InitConfig() error {
 }
 
 func RunNeoMigrations(ctx context.Context, driver neo4j.DriverWithContext, path string) error {
-	files, err := filepath.Glob(filepath.Join(path, "*.cypher"))
+	pattern := filepath.Join(path, "*.cypher")
+	files, err := filepath.Glob(pattern)
 	if err != nil {
-		return err
+		return fmt.Errorf("error finding migration files: %w", err)
+	}
+	if len(files) == 0 {
+		return fmt.Errorf("no migration files found in %s", path)
 	}
 
 	sort.Strings(files)
@@ -111,6 +115,8 @@ func RunNeoMigrations(ctx context.Context, driver neo4j.DriverWithContext, path 
 	if err != nil {
 		return err
 	}
+	fmt.Println(appliedMigrations)
+	fmt.Println(len(files))
 
 	for _, file := range files {
 		name := filepath.Base(file)

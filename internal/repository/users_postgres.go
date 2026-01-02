@@ -78,3 +78,9 @@ func (r *UsersPostgres) UpdateUserBalance(userId int, coins int, action string) 
 	_, err := r.db.Exec(query, coins, userId)
 	return err
 }
+
+func (r *UsersPostgres) IncreaseUserPoints(userId int, points int) error {
+	query := fmt.Sprintf("UPDATE %s SET points = points + $1 WHERE id = $2", usersTable)
+	_, err := r.db.Exec(query, points, userId)
+	return err
+}

@@ -12,4 +12,5 @@ type Achievement struct {
 	UserLastName    string `json:"user_last_name" db:"user_last_name"`
 	UserGrade       int    `json:"user_grade" db:"user_grade"`
 	UserClassLetter string `json:"user_class_letter" db:"user_class_letter"`
+	RejectComment   string `json:"reject_comment" db:"reject_comment"`
 }
